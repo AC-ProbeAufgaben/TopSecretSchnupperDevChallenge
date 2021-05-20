@@ -32,6 +32,22 @@ Create an Endpoint that returns one Entity of the Database by its ID
 this endpoint should be reachable with the following url in postman  
 i.e. "http://localhost:8080/1" for "Steve"
 
+
+## Task 4 
+
+Create an Endpoint that allows to create a new Entity for the Table
+
+this Endpoint should be reachable with the following url in postman
+i.e. "http//localhost:8080/add" (the entity-definition will be send in the body)
+
+
+## Task 5 
+
+If the endpoint "http://localhost:8080/add" is called with the names  
+ "Hawkeye", "Clint","Francis","Barton",  
+ "Sören" or Soeren in the name, last_name or email columns  
+ the endpoint should return "Due to a lack of noticeable abilities you are not wanted"
+
 ## Technology recommendations
 * REST API
 * Spring Boot
