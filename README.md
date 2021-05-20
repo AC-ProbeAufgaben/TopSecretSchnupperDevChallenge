@@ -14,6 +14,8 @@ Recreate the following table in the database of your choosing
 
 ![image info](ExampleTable.png)
 
+the table name should be FOOD_FRIENDS
+
 To populate the table you can use the "data.sql" file in src/main/resources/data folder
 
 ## Task 2
