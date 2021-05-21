@@ -61,7 +61,7 @@ If the endpoint "http://localhost:8080/add" is called with the names
   
   * "http://localhost:8080/remove/{id}"  to remove an Entity
         
- ## Task 7
+ ## Task 8
  
  Change the name of the Model FoodFriends to Avengers
  and change the field age into password 
@@ -75,7 +75,7 @@ If the endpoint "http://localhost:8080/add" is called with the names
  
  i.e. two avengers can have the same favfood, one avenger can have many favfood
  
- ## Task 8
+ ## Task 9
  
  Create a new Endpoint that returns a list of entities by their favorite food
  
@@ -83,7 +83,7 @@ If the endpoint "http://localhost:8080/add" is called with the names
  i.e. "http://localhost:8080/food/pizza"  
  returns a list of entities with favfood pizza 
  
- ## Task 9
+ ## Task 10
  
  Create a simple Login where an Avenger
   can login with his name and password
