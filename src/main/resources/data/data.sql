@@ -1,4 +1,4 @@
-INSERT INTO FOOD_FRIENDS("Name", "LastName", "Age","Email","FavFood") VALUES
+INSERT INTO FOOD_FRIENDS("name", "last_name", "age","email","fav_food") VALUES
    ('Steve', 'Rogers', 102, 'cptA@Avengers.com', 'Wienerle'),
    ('Tony', 'Stark', 28, 'ironM@Avengers.com', 'Burger'),
    ('Peter', 'Parker', 16, 'spidey@Avengers.com', 'Uncle Bens'),

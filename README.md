@@ -32,64 +32,6 @@ Create an Endpoint that returns one Entity of the Database by its ID
 this endpoint should be reachable with the following url in postman  
 i.e. "http://localhost:8080/1" for "Steve"
 
-
-## Task 4 
-
-Create an Endpoint that allows to create a new Entity for the Table
-
-this Endpoint should be reachable with the following url in postman
-i.e. "http://localhost:8080/add" (the entity-definition will be send in the body)
-
-
-## Task 5 
-
-If the endpoint "http://localhost:8080/add" is called with the names  
- "Hawkeye", "Clint","Francis","Barton",  
- "Sören" or Soeren in the name, last_name or email columns  
- the endpoint should return "Due to a lack of noticeable abilities you are not wanted"
- 
- ## Task 6
- Create an Endpoint that returns the entity by its name  
-  
- the endpoint should be reachable with the following url in postman 
- i.e. "http://localhost:8080/steve" for the Entity of Steve 
- 
- ## Task 7
- Create the following Endpoints:   
- * "http://localhost:8080/edit/{id}" (changes in the body) 
-      to edit any field of the Entity
-  
-  * "http://localhost:8080/remove/{id}"  to remove an Entity
-        
- ## Task 8
- 
- Change the name of the Model FoodFriends to Avengers
- and change the field age into password 
- 
- Create a new Entity called Foods with following fields:
- 
- id, name 
- 
- Change the FavFood field of the Avengers Entity to an  
- appropriate EntityRelationship to Foods
- 
- i.e. two avengers can have the same favfood, one avenger can have many favfood
- 
- ## Task 9
- 
- Create a new Endpoint that returns a list of entities by their favorite food
- 
- the endpoint should be reachable with the following url in postman  
- i.e. "http://localhost:8080/food/pizza"  
- returns a list of entities with favfood pizza 
- 
- ## Task 10
- 
- Create a simple Login where an Avenger
-  can login with his name and password
-  once logged in the entity will be presented by his non-sensitive data
- 
-
 ## Technology recommendations
 * REST API
 * Spring Boot
