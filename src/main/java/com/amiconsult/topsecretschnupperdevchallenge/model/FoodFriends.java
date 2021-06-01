@@ -1,14 +1,16 @@
 package com.amiconsult.topsecretschnupperdevchallenge.model;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "food_friends")
+@Table(name = "FOOD_FRIENDS")
 public class FoodFriends {
 
     @Id
-   // @GeneratedValue(strategy = GenerationType.IDENTITY) // --- 1)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name= "name")
     private String name;
@@ -16,31 +18,43 @@ public class FoodFriends {
     @Column(name= "last_name")
     private String lastName;
 
-    @Column(name = "email")
-    private String email;
-
     @Column(name = "age")
     private int age;
+
+    @Column(name = "email")
+    private String email;
 
     @Column(name = "fav_food")
     private String favFood;
 
-    public FoodFriends(String name, String lastName, String email, int age, String favFood) {
+    @ManyToMany(targetEntity = FavFood.class, cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    }, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "friends_foods",
+            joinColumns = @JoinColumn(name = "friend_id"),
+            inverseJoinColumns = @JoinColumn(name = "food_id"))
+    Set<FavFood> favFoods = new HashSet<>();
+
+    public FoodFriends(Long id, String name, String lastName, int age, String email, String favFood, Set<FavFood> favFoods) {
+        this.id = id;
         this.name = name;
         this.lastName = lastName;
-        this.email = email;
         this.age = age;
+        this.email = email;
         this.favFood = favFood;
+        this.favFoods = favFoods;
     }
 
     public FoodFriends() {
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -84,5 +98,21 @@ public class FoodFriends {
         this.favFood = favFood;
     }
 
+    public Set<FavFood> getFavFoods() {
+        return favFoods;
+    }
 
+    public void setFavFoods(Set<FavFood> favFoods) {
+        this.favFoods = favFoods;
+    }
+
+    public void addFavFood(FavFood favFood) {
+        favFoods.add(favFood);
+        favFood.getFavorites().add(this);
+    }
+
+    public void removeFavFood(FavFood favFood) {
+        favFoods.remove(favFood);
+        favFood.getFavorites().remove(this);
+    }
 }
