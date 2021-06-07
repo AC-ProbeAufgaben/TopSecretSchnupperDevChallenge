@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 import java.util.List;
 import java.util.Optional;
 
@@ -48,33 +47,28 @@ public class FoodFriendsController {
             FoodFriends friend = Optional.ofNullable(foodFriendsRepository.findByNameIgnoreCase(name))
                     .orElseThrow(() -> new ResourceNotFoundException("Friend not found for name: " + name));
 
-//            if (friend.isEmpty()) { throw new ResourceNotFoundException("Friend not found for name: " + name); }
+//         TODO: Why are optionals better than if statements, like below
+//              if (friend.isEmpty()) { throw new ResourceNotFoundException("Friend not found for name: " + name); }
+
             return friend;
     }
 
     // add new friend
     @PostMapping("add")
-    public ResponseEntity<String> postFriend(@RequestBody FoodFriends friend) {
+    public ResponseEntity<?> postFriend(@RequestBody FoodFriends friend) {
+        if (foodFriendsService.checkName(friend)) {
+            return ResponseEntity.badRequest().body("Due to a lack of noticeable abilities you are not wanted");
+        }
+        FoodFriends newFriend = foodFriendsService.checkDbAndSave(friend);
+        return ResponseEntity.ok(foodFriendsRepository.save(newFriend));
+    }
 
-
-
-//            for (FavFood food : friend.getFavFoods()) {
-//                if (favFoodRepository.count() == 0) {
-//                    break;
-//                } else if (favFoodRepository.findByName(food.getName()).equals(food.getName())) {
-//                    friend.addFavFood(food);
-//                    food.addFoodFriend(friend);
-//                    foodFriendsRepository.
-//                }
-//            }
-
-            // Added foodFriendsService to take care of checkName logic.
-           if (foodFriendsService.checkName(friend)) {
-               return ResponseEntity.badRequest().body("Due to a lack of noticeable abilities you are not wanted");
-           } else {
-               foodFriendsRepository.save(friend);
-               return ResponseEntity.ok().body("Abilities have been proven. Friend Added.");
-           }
+    // get friends by their favorite food
+    @GetMapping("/food/{food}")
+    public ResponseEntity<?> getFriendsByFood(@PathVariable String food) throws ResourceNotFoundException {
+        FavFood favFood = Optional.ofNullable(favFoodRepository.findByNameIgnoreCase(food))
+                .orElseThrow(() -> new ResourceNotFoundException("Food not found: " + food));
+        return ResponseEntity.ok(favFood.getFavorites());
     }
 
     // edit friend by Id

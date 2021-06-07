@@ -6,3 +6,7 @@ INSERT INTO FOOD_FRIENDS("name", "last_name", "age","email","fav_food") VALUES
    ('Thor', 'Odinson', 250, 'thunder@Avengers.com', 'Steak'),
    ('Natasha', 'Romanoff', 28, 'bdow@Avengers.com', 'Spargelcremesuppe'),
    ('T', 'Challa', 35, 'blackp@Avengers.com', 'Wings');
+
+INSERT INTO FAV_FOODS("name") VALUES
+   ('pizza'),
+   ('steak');

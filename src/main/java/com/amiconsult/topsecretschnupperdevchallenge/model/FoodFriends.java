@@ -27,15 +27,8 @@ public class FoodFriends {
     @Column(name = "fav_food")
     private String favFood;
 
-    @ManyToMany(targetEntity = FavFood.class, cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    }, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "friends_foods",
-            joinColumns = @JoinColumn(name = "friend_id"),
-            inverseJoinColumns = @JoinColumn(name = "food_id"))
-    Set<FavFood> favFoods = new HashSet<>();
+    @ManyToMany(mappedBy = "favorites", cascade = CascadeType.ALL)
+    private Set<FavFood> favFoods = new HashSet<>();
 
     public FoodFriends(Long id, String name, String lastName, int age, String email, String favFood, Set<FavFood> favFoods) {
         this.id = id;
@@ -108,11 +101,10 @@ public class FoodFriends {
 
     public void addFavFood(FavFood favFood) {
         favFoods.add(favFood);
-        favFood.getFavorites().add(this);
+
     }
 
     public void removeFavFood(FavFood favFood) {
         favFoods.remove(favFood);
-        favFood.getFavorites().remove(this);
     }
 }
