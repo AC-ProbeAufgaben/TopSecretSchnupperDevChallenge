@@ -18,25 +18,29 @@ public class FoodFriends {
     @Column(name= "last_name")
     private String lastName;
 
-    @Column(name = "age")
-    private int age;
+    @Column(name = "password")
+    private String password;
 
     @Column(name = "email")
     private String email;
 
-    @Column(name = "fav_food")
-    private String favFood;
+    @Column(name = "active")
+    private boolean active;
+
+    @Column(name = "role")
+    private String role;
 
     @ManyToMany(mappedBy = "favorites", cascade = CascadeType.ALL)
     private Set<FavFood> favFoods = new HashSet<>();
 
-    public FoodFriends(Long id, String name, String lastName, int age, String email, String favFood, Set<FavFood> favFoods) {
+    public FoodFriends(Long id, String name, String lastName, String password, String email, boolean active, String role, Set<FavFood> favFoods) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
-        this.age = age;
+        this.password = password;
         this.email = email;
-        this.favFood = favFood;
+        this.active = active;
+        this.role = role;
         this.favFoods = favFoods;
     }
 
@@ -75,20 +79,28 @@ public class FoodFriends {
         this.email = email;
     }
 
-    public int getAge() {
-        return age;
+    public String getPassword() {
+        return password;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getFavFood() {
-        return favFood;
+    public boolean isActive() {
+        return active;
     }
 
-    public void setFavFood(String favFood) {
-        this.favFood = favFood;
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public Set<FavFood> getFavFoods() {
