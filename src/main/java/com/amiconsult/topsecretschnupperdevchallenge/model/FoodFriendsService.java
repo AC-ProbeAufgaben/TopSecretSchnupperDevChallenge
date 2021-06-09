@@ -3,6 +3,7 @@ package com.amiconsult.topsecretschnupperdevchallenge.model;
 
 import com.amiconsult.topsecretschnupperdevchallenge.repository.FavFoodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -14,6 +15,9 @@ public class FoodFriendsService {
 
     @Autowired
     FavFoodRepository favFoodRepository;
+
+    @Autowired
+    BCryptPasswordEncoder bcrypt;
 
     public boolean checkName(FoodFriends friend) {
 
@@ -39,6 +43,9 @@ public class FoodFriendsService {
         newFriend.setName(friend.getName());
         newFriend.setLastName(friend.getLastName());
         newFriend.setEmail(friend.getEmail());
+        newFriend.setPassword(bcrypt.encode(friend.getPassword()));
+        newFriend.setActive(friend.isActive());
+        newFriend.setRole(friend.getRole());
 
         for (FavFood food : friend.getFavFoods()) {
 
