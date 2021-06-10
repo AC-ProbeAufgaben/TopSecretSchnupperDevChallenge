@@ -36,3 +36,7 @@
     arrayOfNumbers: [1, 2, 3]
     ```
 - [OpenAPI specification Explained](https://oai.github.io/Documentation/specification.html) - quick intro to how a description file is written
+
+## 3. Add Swagger UI to Spring Boot
+
+Great Video Intro & Tutorial: [Java Brains](https://www.youtube.com/watch?v=gduKpLW_vdY)
