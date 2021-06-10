@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/friends")
@@ -87,6 +88,15 @@ public class FoodFriendsController {
         throws ResourceNotFoundException {
             FoodFriends deletedFriend = foodFriendsRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Friend not found for id: " + id));
+
+            Set<FavFood> favFoodSet = deletedFriend.getFavFoods();
+
+            if (favFoodSet != null) {
+                for (FavFood favFood : favFoodSet) {
+                    favFood.removeFoodFriend(deletedFriend);
+                }
+            }
+
             foodFriendsRepository.delete(deletedFriend);
             return ResponseEntity.ok().body("Bye Bye " + deletedFriend.getName());
     }
