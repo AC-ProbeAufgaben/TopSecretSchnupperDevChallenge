@@ -30,7 +30,8 @@ public class FoodFriends {
     @Column(name = "role")
     private String role;
 
-    @ManyToMany(mappedBy = "favorites", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "favorites", cascade =
+            {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<FavFood> favFoods = new HashSet<>();
 
     public FoodFriends(Long id, String name, String lastName, String password, String email, boolean active, String role, Set<FavFood> favFoods) {
@@ -113,10 +114,11 @@ public class FoodFriends {
 
     public void addFavFood(FavFood favFood) {
         favFoods.add(favFood);
-
     }
 
     public void removeFavFood(FavFood favFood) {
-        favFoods.remove(favFood);
+        favFoods.remove(favFood);;
     }
+
+
 }

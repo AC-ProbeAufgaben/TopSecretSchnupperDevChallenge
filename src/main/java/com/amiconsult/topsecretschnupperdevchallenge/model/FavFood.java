@@ -19,7 +19,7 @@ public class FavFood {
     private String name;
 
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "friends_fav_foods",
             joinColumns = @JoinColumn(name = "food_id"),
@@ -62,5 +62,9 @@ public class FavFood {
 
     public void addFoodFriend(FoodFriends foodFriend) {
         favorites.add(foodFriend);
+    }
+
+    public void removeFoodFriend(FoodFriends foodFriend) {
+        favorites.remove(foodFriend);
     }
 }
