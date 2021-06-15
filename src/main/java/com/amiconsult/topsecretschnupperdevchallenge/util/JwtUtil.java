@@ -1,8 +1,6 @@
 package com.amiconsult.topsecretschnupperdevchallenge.util;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -30,8 +28,12 @@ public class JwtUtil {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+    private Claims extractAllClaims(String token) throws ExpiredJwtException {
+       Claims extractJwt = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
+
+       System.out.println("<><><> EXTRACT JWT BODY <><><>"); // Why is this called three times?
+       System.out.println(extractJwt);
+       return extractJwt;
     }
 
     private Boolean isTokenExpired(String token) {

@@ -1,12 +1,9 @@
 package com.amiconsult.topsecretschnupperdevchallenge.controller;
 
 import com.amiconsult.topsecretschnupperdevchallenge.exception.ResourceNotFoundException;
-import com.amiconsult.topsecretschnupperdevchallenge.model.FavFood;
-import com.amiconsult.topsecretschnupperdevchallenge.model.FoodFriends;
-import com.amiconsult.topsecretschnupperdevchallenge.model.FoodFriendsService;
+import com.amiconsult.topsecretschnupperdevchallenge.model.*;
 import com.amiconsult.topsecretschnupperdevchallenge.repository.FavFoodRepository;
 import com.amiconsult.topsecretschnupperdevchallenge.repository.FoodFriendsRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,10 +33,11 @@ public class FoodFriendsController {
 
     //get friend by id
     @GetMapping("{id}")
-    public FoodFriends getFriendById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
+    public FoodFriendsDto getFriendById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
             FoodFriends friend = foodFriendsRepository.findById(id)
                     .orElseThrow(() -> new ResourceNotFoundException("Friend not found for id: " + id));
-            return friend;
+
+            return FoodFriendsMapper.INSTANCE.toDto( friend );
     }
 
     //get friend by first name
