@@ -29,11 +29,8 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
     private Claims extractAllClaims(String token) throws ExpiredJwtException {
-       Claims extractJwt = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
 
-       System.out.println("<><><> EXTRACT JWT BODY <><><>"); // Why is this called three times?
-       System.out.println(extractJwt);
-       return extractJwt;
+       return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
     private Boolean isTokenExpired(String token) {

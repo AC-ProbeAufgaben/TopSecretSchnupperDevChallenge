@@ -1,18 +1,19 @@
 package com.amiconsult.topsecretschnupperdevchallenge.model;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
+@Accessors
 public class FoodFriendsDto {
 
     private String name;
     private String lastName;
+    private String password;
     private String email;
-    private List<String> favorites = new ArrayList<>();
+    private List<String> favFoodsList = new ArrayList<>();
 
 }

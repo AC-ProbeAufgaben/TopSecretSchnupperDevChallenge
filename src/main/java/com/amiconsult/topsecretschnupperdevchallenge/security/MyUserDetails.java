@@ -13,9 +13,6 @@ import java.util.stream.Collectors;
 public class MyUserDetails implements UserDetails {
 
     private String userName;
-    private String name;
-    private String lastName;
-    private String email;
     private String password;
     private boolean active;
     private List<GrantedAuthority> authorities;
@@ -23,9 +20,6 @@ public class MyUserDetails implements UserDetails {
 
     public MyUserDetails(FoodFriends user) {
         this.userName = user.getEmail();
-        this.name = user.getName();
-        this.lastName = user.getLastName();
-        this.email = user.getEmail();
         this.password = user.getPassword();
         this.active = user.isActive();
         this.authorities = Arrays.stream(user.getRole().split(","))

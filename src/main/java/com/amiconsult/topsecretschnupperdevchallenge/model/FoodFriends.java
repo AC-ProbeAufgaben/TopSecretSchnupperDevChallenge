@@ -1,6 +1,7 @@
 package com.amiconsult.topsecretschnupperdevchallenge.model;
 
 import lombok.*;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -11,6 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
+@Accessors(chain = true)
 @Table(name = "FOOD_FRIENDS")
 public class FoodFriends {
 
@@ -37,26 +39,15 @@ public class FoodFriends {
     private String role;
 
     @ManyToMany(mappedBy = "favorites", cascade =
-            {CascadeType.PERSIST, CascadeType.MERGE})
+            {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     private Set<FavFood> favFoods = new HashSet<>();
-
-//    public FoodFriends(Long id, String name, String lastName, String password, String email, boolean active, String role, Set<FavFood> favFoods) {
-//        this.id = id;
-//        this.name = name;
-//        this.lastName = lastName;
-//        this.password = password;
-//        this.email = email;
-//        this.active = active;
-//        this.role = role;
-//        this.favFoods = favFoods;
-//    }
 
     public void addFavFood(FavFood favFood) {
         favFoods.add(favFood);
     }
 
     public void removeFavFood(FavFood favFood) {
-        favFoods.remove(favFood);;
+        favFoods.remove(favFood);
     }
 
 

@@ -6,6 +6,7 @@ import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,9 +15,10 @@ public interface FoodFriendsMapper {
 
     FoodFriendsMapper INSTANCE = Mappers.getMapper( FoodFriendsMapper.class );
 
-    @Mapping(source = "favFoods", target = "favorites", qualifiedByName = "getFoods")
+    @Mapping(source = "favFoods", target = "favFoodsList", qualifiedByName = "getFoods")
     FoodFriendsDto toDto(FoodFriends foodFriend);
 
+    @Mapping(source = "favFoodsList", target = "favFoods", qualifiedByName = "getFavs")
     FoodFriends fromDto(FoodFriendsDto foodFriendDto);
 
     @Named("getFoods")
@@ -28,4 +30,15 @@ public interface FoodFriendsMapper {
         return favFoodsList;
     }
 
+    @Named("getFavs")
+    default Set<FavFood> getFavFoodsSet(List<String> favFoodList) {
+        Set<FavFood> favFoodSet = new HashSet<>();
+
+        for (String food : favFoodList) {
+            FavFood favFood = new FavFood();
+            favFood.setName(food);
+            favFoodSet.add(favFood);
+        }
+        return favFoodSet;
+    }
 }

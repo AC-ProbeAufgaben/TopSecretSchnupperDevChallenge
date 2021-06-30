@@ -10,8 +10,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 
 
 @RestController
@@ -32,15 +32,16 @@ public class HelloResource {
         return "Hello World";
     }
 
+    @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/authenticate")
-    public ResponseEntity<?> createAuthToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<AuthenticationResponse> createAuthToken(@RequestBody AuthenticationRequest authenticationRequest) throws BadCredentialsException {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
             );
 
         } catch (BadCredentialsException e) {
-            throw new Exception("Incorrect username or password (JWT)", e);
+            throw new BadCredentialsException("Bad Credentials", e);
         }
 
         final UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());

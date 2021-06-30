@@ -8,5 +8,5 @@ INSERT INTO FOOD_FRIENDS("name", "last_name","email","password", "active", "role
    ('T', 'Challa', 'blackp@Avengers.com', 'pass', true, 'ROLE_USER');
 
 INSERT INTO FAV_FOODS("name") VALUES
-   ('pizza'),
-   ('steak');
+    ('steak'),
+    ('pizza');
