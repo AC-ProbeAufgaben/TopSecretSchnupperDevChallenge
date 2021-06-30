@@ -15,7 +15,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Enumeration;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -42,35 +41,17 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = myUserDetailsService.loadUserByUsername(username);
-                if (jwtUtil.validateToken(jwt, userDetails)) {
+                Boolean jwtIsValidated = jwtUtil.validateToken(jwt, userDetails);
+                if (Boolean.TRUE.equals(jwtIsValidated)) {
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
                     SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 }
             }
         } catch (ExpiredJwtException ex) {
-
-
-            String requestURL = httpServletRequest.getRequestURL().toString();
-
-            System.out.println("<><><> HTTP REQ HEADERS<><><>");
-            Enumeration<String> httpRequest= httpServletRequest.getHeaderNames();
-
-            for (Enumeration<?> e = httpRequest; e.hasMoreElements();) {
-                String nextHeaderName = (String) e.nextElement();
-                String headerValue = httpServletRequest.getHeader(nextHeaderName);
-                System.out.println(nextHeaderName + headerValue);
-            }
-
-            System.out.println("<><><> REQUEST URL <><><>");
-            System.out.println(requestURL);
-            System.out.println("<><><> EXPIRED JWT EXCEPTION <><><>");
-
-            System.out.println(ex);
-
+            logger.error(ex);
         } catch (Exception ex) {
-            System.out.println("<><><> EXCEPTION <><><>");
-            System.out.println(ex);
+            throw ex;
         }
             filterChain.doFilter(httpServletRequest, httpServletResponse);
         }

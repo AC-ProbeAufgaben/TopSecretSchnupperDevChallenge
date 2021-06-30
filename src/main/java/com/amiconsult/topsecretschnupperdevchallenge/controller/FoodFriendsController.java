@@ -4,17 +4,19 @@ import com.amiconsult.topsecretschnupperdevchallenge.exception.ResourceNotFoundE
 import com.amiconsult.topsecretschnupperdevchallenge.model.*;
 import com.amiconsult.topsecretschnupperdevchallenge.repository.FavFoodRepository;
 import com.amiconsult.topsecretschnupperdevchallenge.repository.FoodFriendsRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/friends")
 public class FoodFriendsController {
+
+    private static final String FRIENDNOTFOUND = "Friend not found for id: ";
 
     @Autowired
     FoodFriendsRepository foodFriendsRepository;
@@ -28,43 +30,45 @@ public class FoodFriendsController {
     //get all friends
     @GetMapping("all")
     public List<FoodFriends> getAllFriends() {
-        return foodFriendsRepository.findAll();
+
+        return foodFriendsService.findAllFriends();
     }
 
     //get friend by id
     @GetMapping("{id}")
-    public FoodFriendsDto getFriendById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
+    public ResponseEntity<FoodFriends> getFriendById(@PathVariable(value = "id") Long id) throws ResourceNotFoundException {
             FoodFriends friend = foodFriendsRepository.findById(id)
-                    .orElseThrow(() -> new ResourceNotFoundException("Friend not found for id: " + id));
+                    .orElseThrow(() -> new ResourceNotFoundException(FRIENDNOTFOUND + id));
 
-            return FoodFriendsMapper.INSTANCE.toDto( friend );
+            return new ResponseEntity<>(friend, HttpStatus.OK);
     }
 
     //get friend by first name
     @GetMapping("/name/{name}")
-    public FoodFriends getFriendByName(@PathVariable String name) throws ResourceNotFoundException {
+    public ResponseEntity<FoodFriends> getFriendByName(@PathVariable String name) throws ResourceNotFoundException {
             FoodFriends friend = Optional.ofNullable(foodFriendsRepository.findByNameIgnoreCase(name))
                     .orElseThrow(() -> new ResourceNotFoundException("Friend not found for name: " + name));
 
-//         TODO: Why are optionals better than if statements, like below
-//              if (friend.isEmpty()) { throw new ResourceNotFoundException("Friend not found for name: " + name); }
 
-            return friend;
+           return new ResponseEntity<>(friend, HttpStatus.OK);
     }
 
     // add new friend
-    @PostMapping("add")
-    public ResponseEntity<?> postFriend(@RequestBody FoodFriends friend) {
+    @CrossOrigin(origins = "http://localhost:4200")
+    @PostMapping("/add")
+    public ResponseEntity<FoodFriends> postFriend(@RequestBody FoodFriendsDto friendDto) throws ResourceNotFoundException {
+        FoodFriends friend = FoodFriendsMapper.INSTANCE.fromDto(friendDto);
+
         if (foodFriendsService.checkName(friend)) {
-            return ResponseEntity.badRequest().body("Due to a lack of noticeable abilities you are not wanted");
+           throw new ResourceNotFoundException("You are not wanted " + friend.getName());
         }
-        FoodFriends newFriend = foodFriendsService.checkDbAndSave(friend);
-        return ResponseEntity.ok(foodFriendsRepository.save(newFriend));
+
+        return new ResponseEntity<>(foodFriendsService.checkDbAndSave(friend), HttpStatus.CREATED);
     }
 
     // get friends by their favorite food
     @GetMapping("/food/{food}")
-    public ResponseEntity<?> getFriendsByFood(@PathVariable String food) throws ResourceNotFoundException {
+    public ResponseEntity<Set<FoodFriends>> getFriendsByFood(@PathVariable String food) throws ResourceNotFoundException {
         FavFood favFood = Optional.ofNullable(favFoodRepository.findByNameIgnoreCase(food))
                 .orElseThrow(() -> new ResourceNotFoundException("Food not found: " + food));
         return ResponseEntity.ok(favFood.getFavorites());
@@ -72,12 +76,16 @@ public class FoodFriendsController {
 
     // edit friend by Id
     @PutMapping("/edit/{id}")
-    public ResponseEntity<String> editFriend(@RequestBody FoodFriends friend, @PathVariable(value = "id") Long id)
+    public ResponseEntity<FoodFriends> editFriend(@RequestBody FoodFriendsDto friendDto, @PathVariable(value = "id") Long id)
         throws ResourceNotFoundException {
-            FoodFriends friendToUpdate = foodFriendsRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Friend not found for id: " + id));
+            FoodFriends friendToUpdate = FoodFriendsMapper.INSTANCE.fromDto(friendDto);
 
-            foodFriendsRepository.save(friend); // REPLACES entity. Properties will be defined as NULL if not given.
-            return ResponseEntity.ok().body("Friend Updated. mmmm Food.");
+            FoodFriends updatedFriend = foodFriendsRepository.findById(id)
+                    .orElseThrow(() -> new ResourceNotFoundException(FRIENDNOTFOUND + id));
+
+            foodFriendsService.updateFoodFriend(friendToUpdate, updatedFriend);
+
+            return new ResponseEntity<>(foodFriendsRepository.save(updatedFriend), HttpStatus.OK);
     }
 
     // delete friend by Id
@@ -85,17 +93,10 @@ public class FoodFriendsController {
     public ResponseEntity<String> removeFriend(@PathVariable(value = "id") Long id)
         throws ResourceNotFoundException {
             FoodFriends deletedFriend = foodFriendsRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Friend not found for id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(FRIENDNOTFOUND + id));
 
-            Set<FavFood> favFoodSet = deletedFriend.getFavFoods();
+            foodFriendsService.deleteFriendsFoods(deletedFriend);
 
-            if (favFoodSet != null) {
-                for (FavFood favFood : favFoodSet) {
-                    favFood.removeFoodFriend(deletedFriend);
-                }
-            }
-
-            foodFriendsRepository.delete(deletedFriend);
             return ResponseEntity.ok().body("Bye Bye " + deletedFriend.getName());
     }
 }

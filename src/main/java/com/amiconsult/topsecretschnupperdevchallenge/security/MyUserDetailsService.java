@@ -19,10 +19,14 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
-        Optional<FoodFriends> user = foodFriendsRepository.findByEmail(userName);
+        Optional<FoodFriends> user = Optional.ofNullable(foodFriendsRepository.findByEmail(userName)
+                .orElseThrow(() -> new UsernameNotFoundException("Not Found: " + userName)));
 
-        user.orElseThrow(() -> new UsernameNotFoundException("Not Found: "+userName));
-
-        return user.map(MyUserDetails::new).get();
+        FoodFriends friend = null;
+        
+        if (user.isPresent()) {
+            friend = user.get();
+        }
+        return new MyUserDetails(friend);
     }
 }
