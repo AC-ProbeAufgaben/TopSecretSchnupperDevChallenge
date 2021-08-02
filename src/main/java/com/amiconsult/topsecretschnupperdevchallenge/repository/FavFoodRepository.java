@@ -9,4 +9,5 @@ public interface FavFoodRepository extends JpaRepository<FavFood, Long> {
 
     FavFood findByName(String name);
     FavFood findByNameIgnoreCase(String name);
+
 }

@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 public class MyUserDetails implements UserDetails {
 
     private String userName;
+    private String name;
+    private Long id;
     private String password;
     private boolean active;
     private List<GrantedAuthority> authorities;
@@ -20,6 +22,8 @@ public class MyUserDetails implements UserDetails {
 
     public MyUserDetails(FoodFriends user) {
         this.userName = user.getEmail();
+        this.name = user.getName();
+        this.id = user.getId();
         this.password = user.getPassword();
         this.active = user.isActive();
         this.authorities = Arrays.stream(user.getRole().split(","))
@@ -30,6 +34,13 @@ public class MyUserDetails implements UserDetails {
     public MyUserDetails() {
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public Long getId() {
+        return id;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -45,7 +56,6 @@ public class MyUserDetails implements UserDetails {
     public String getUsername() {
         return userName;
     }
-
 
     @Override
     public boolean isAccountNonExpired() {

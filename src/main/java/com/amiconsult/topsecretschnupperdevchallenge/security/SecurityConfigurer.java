@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 @EnableWebSecurity
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
-    private String ADMIN = "Admin";
+    private String ADMIN = "ADMIN";
     private String LOCAL_HOST = "http://localhost:4200";
 
     @Autowired
@@ -49,8 +49,9 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/friends/add").permitAll()
+                .antMatchers("/reset-password/**").permitAll()
                 .antMatchers("/admin").hasRole(ADMIN)
-                .antMatchers("/friends/**").hasAnyRole(ADMIN, "USER")
+                .antMatchers("/friends/**").hasAnyRole(ADMIN, "USER", "PEASANT")
                 .antMatchers("/user").hasAnyRole(ADMIN, "USER")
                 .antMatchers("/auth/authenticate").permitAll()
                 .antMatchers(AUTH_WHITELIST).permitAll()

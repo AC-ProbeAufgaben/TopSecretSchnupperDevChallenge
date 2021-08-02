@@ -2,12 +2,13 @@ package com.amiconsult.topsecretschnupperdevchallenge.controller;
 
 import com.amiconsult.topsecretschnupperdevchallenge.exception.ResourceNotFoundException;
 import com.amiconsult.topsecretschnupperdevchallenge.model.*;
+import com.amiconsult.topsecretschnupperdevchallenge.model.reset_password.security_question.SecurityQuestionRepository;
 import com.amiconsult.topsecretschnupperdevchallenge.repository.FavFoodRepository;
 import com.amiconsult.topsecretschnupperdevchallenge.repository.FoodFriendsRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -26,6 +27,12 @@ public class FoodFriendsController {
 
     @Autowired
     FoodFriendsService  foodFriendsService;
+
+    @Autowired
+    SecurityQuestionRepository securityQuestionRepository;
+
+    @Autowired
+    BCryptPasswordEncoder bcrypt;
 
     //get all friends
     @GetMapping("all")
@@ -49,7 +56,6 @@ public class FoodFriendsController {
             FoodFriends friend = Optional.ofNullable(foodFriendsRepository.findByNameIgnoreCase(name))
                     .orElseThrow(() -> new ResourceNotFoundException("Friend not found for name: " + name));
 
-
            return new ResponseEntity<>(friend, HttpStatus.OK);
     }
 
@@ -57,11 +63,18 @@ public class FoodFriendsController {
     @CrossOrigin(origins = "http://localhost:4200")
     @PostMapping("/add")
     public ResponseEntity<FoodFriends> postFriend(@RequestBody FoodFriendsDto friendDto) throws ResourceNotFoundException {
+
+
         FoodFriends friend = FoodFriendsMapper.INSTANCE.fromDto(friendDto);
+
+        System.out.println(friend.getSecurityQuestionAnswer().getAnswer());
+        System.out.println(friend.getSecurityQuestionAnswer());
+
 
         if (foodFriendsService.checkName(friend)) {
            throw new ResourceNotFoundException("You are not wanted " + friend.getName());
         }
+
 
         return new ResponseEntity<>(foodFriendsService.checkDbAndSave(friend), HttpStatus.CREATED);
     }
@@ -87,6 +100,28 @@ public class FoodFriendsController {
 
             return new ResponseEntity<>(foodFriendsRepository.save(updatedFriend), HttpStatus.OK);
     }
+
+    // change password by id
+    @PutMapping("/edit-password/{id}")
+    public ResponseEntity<FoodFriends> editPassword(@RequestBody ChangePassRequest changePassRequest, @PathVariable(value = "id") Long id)
+            throws ResourceNotFoundException {
+
+        FoodFriends updateFriendsPassword = foodFriendsRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(FRIENDNOTFOUND + id));
+
+        AuthenticationRequest authRequest = new AuthenticationRequest();
+        authRequest.setUsername(updateFriendsPassword.getEmail());
+        authRequest.setPassword(changePassRequest.getOldPassword());
+
+        Boolean isAuthenticated = foodFriendsService.checkPassword(authRequest);
+
+        if (isAuthenticated) {
+            System.out.println("password check AUTHENTICATED <><><<><>");
+            foodFriendsService.changePassword(updateFriendsPassword, changePassRequest);
+        }
+        return new ResponseEntity<>(foodFriendsRepository.save(updateFriendsPassword), HttpStatus.OK);
+    }
+
 
     // delete friend by Id
     @DeleteMapping("/remove/{id}")

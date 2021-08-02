@@ -1,5 +1,7 @@
 package com.amiconsult.topsecretschnupperdevchallenge.model;
 
+import com.amiconsult.topsecretschnupperdevchallenge.model.reset_password.security_question.SecurityQuestionAnswer;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -37,6 +39,13 @@ public class FoodFriends {
 
     @Column(name = "role")
     private String role;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(
+            name = "answer_id", referencedColumnName = "id"
+    )
+    @JsonManagedReference
+    private SecurityQuestionAnswer securityQuestionAnswer;
 
     @ManyToMany(mappedBy = "favorites", cascade =
             {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
