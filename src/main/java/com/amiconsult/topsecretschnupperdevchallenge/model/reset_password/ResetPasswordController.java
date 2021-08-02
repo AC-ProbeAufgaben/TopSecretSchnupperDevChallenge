@@ -65,11 +65,13 @@ public class ResetPasswordController {
 
         SecurityQuestionAnswer securityQuestionAnswer = securityQuestionAnswerRepository.findByFoodFriendId(foodFriend.getId()).orElseThrow(ResourceNotFoundException::new);
 
-        String encodedAnswerFromDb = securityQuestionAnswer.getAnswer();
+        Long questionIdFromDb = securityQuestionAnswer.getQuestion().getId();
+        Boolean questionIdMatches = questionIdFromDb == authRequest.getSecurityQuestionId();
 
+        String encodedAnswerFromDb = securityQuestionAnswer.getAnswer();
         Boolean encodedAnswerMatches = bcrypt.matches(authRequest.getSecurityQuestionAnswer(), encodedAnswerFromDb);
 
-        if (!encodedAnswerMatches) {
+        if (!encodedAnswerMatches || !questionIdMatches) {
             System.out.println("\n<><><> Failed to authenticate <><><>\n");
             throw new IllegalStateException("Failed to Authenticate");
         } else {
