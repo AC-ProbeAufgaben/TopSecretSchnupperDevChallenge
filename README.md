@@ -1,3 +1,7 @@
+## Preview
+
+<img src="https://github.com/vincanger/TopSecretSchnupperDevChallenge/blob/BTB-28/foodfriends-demo.gif" />
+
 ## Description
 
 This is simple full-stack user/admin management app using Angular and Spring Boot. Its features include:
@@ -9,13 +13,10 @@ This is simple full-stack user/admin management app using Angular and Spring Boo
 - Swagger UI documentation
 - and much more!
 
-### Preview
-
-<img src="https://github.com/vincanger/TopSecretSchnupperDevChallenge/blob/BTB-28/foodfriends-demo.gif" />
-
 >> [Angular Frontend](https://github.com/vincanger/TopSecretSchnupperDevChallengeFrontend/tree/BTB-30/food-friends)
+>> [Spring Boot Backend](https://github.com/vincanger/TopSecretSchnupperDevChallenge/tree/BTB-28/src/main/java/com/amiconsult/topsecretschnupperdevchallenge)
 
-### Objective
+## Objective
 
 To develop further full-stack skills and learn new languages and frameworks.
 
