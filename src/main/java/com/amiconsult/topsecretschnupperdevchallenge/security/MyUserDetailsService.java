@@ -18,7 +18,7 @@ public class MyUserDetailsService implements UserDetailsService {
     FoodFriendsRepository foodFriendsRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+    public MyUserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         Optional<FoodFriends> user = Optional.ofNullable(foodFriendsRepository.findByEmail(userName)
                 .orElseThrow(() -> new UsernameNotFoundException("Not Found: " + userName)));
 

@@ -1,99 +1,24 @@
-# Welcome to your Challenge
+## Preview
 
+<img src="https://github.com/vincanger/TopSecretSchnupperDevChallenge/blob/BTB-28/foodfriends-demo.gif" />
 
+## Description
 
-## Prerequisites
-* Get [Slack](https://slack.com/intl/de-de/downloads) up and running for Communication
-* IDE of your choosing i.e. [InelliJIDEA](https://www.jetbrains.com/de-de/idea/download)
-* Database of your choosing i.e.[MySQL](https://www.mysql.com/de/downloads/)
-* [Postman](https://www.postman.com/downloads/)
-* Get comfortable and cosy to start your journey
+This is simple full-stack user/admin management app using Angular and Spring Boot. Its features include:
 
-## Task 1 :white_check_mark:
+- Admin priveleges for managing user data
+- Reset password via email, token, and security question validation
+- Paginated endpoint controller to serve material UI searchable table
+- Frontend and Backend testing
+- Swagger UI documentation
+- and much more!
 
-Recreate the following table in the database of your choosing
+>> [Angular Frontend](https://github.com/vincanger/TopSecretSchnupperDevChallengeFrontend/tree/BTB-30/food-friends)
 
-![image info](ExampleTable.png)
+>> [Spring Boot Backend](https://github.com/vincanger/TopSecretSchnupperDevChallenge/tree/BTB-28/src/main/java/com/amiconsult/topsecretschnupperdevchallenge)
 
-the table name should be FOOD_FRIENDS
+## Objective
 
-To populate the table you can use the "data.sql" file in src/main/resources/data folder
+To develop further full-stack skills and learn new languages and frameworks.
 
-## Task 2 :white_check_mark:
-
-Get this SpringBoot Project up and running  
-Create an Endpoint that returns a list of all the data in the Database
-
-This endpoint should be reachable with the following url in postman "http://localhost:8080/all"
-
-## Task 3 :white_check_mark:
-
-Create an Endpoint that returns one Entity of the Database by its ID
-
-this endpoint should be reachable with the following url in postman  
-i.e. "http://localhost:8080/1" for "Steve"
-
-
-## Task 4 :white_check_mark:
-
-Create an Endpoint that allows to create a new Entity for the Table
-
-this Endpoint should be reachable with the following url in postman
-i.e. "http://localhost:8080/add" (the entity-definition will be send in the body)
-
-
-## Task 5 :white_check_mark:
-
-If the endpoint "http://localhost:8080/add" is called with the names  
-"Hawkeye", "Clint","Francis","Barton",  
-"Sören" or Soeren in the name, last_name or email columns  
-the endpoint should return "Due to a lack of noticeable abilities you are not wanted"
-
-## Task 6 :white_check_mark:
-Create an Endpoint that returns the entity by its name
-
-the endpoint should be reachable with the following url in postman
-i.e. "http://localhost:8080/steve" for the Entity of Steve
-
-## Task 7 :white_check_mark:
-Create the following Endpoints:
-* "http://localhost:8080/edit/{id}" (changes in the body)
-  to edit any field of the Entity
-
-* "http://localhost:8080/remove/{id}"  to remove an Entity
-
-## Task 8 :white_check_mark:
-
-Change the name of the Model FoodFriends to Avengers
-and change the field age into password
-
-Create a new Entity called Foods with following fields:
-
-id, name
-
-Change the FavFood field of the Avengers Entity to an  
-appropriate EntityRelationship to Foods
-
-i.e. two avengers can have the same favfood, one avenger can have many favfood
-
-## Task 9 :white_check_mark:
-
-Create a new Endpoint that returns a list of entities by their favorite food
-
-the endpoint should be reachable with the following url in postman  
-i.e. "http://localhost:8080/food/pizza"  
-returns a list of entities with favfood pizza
-
-## Task 10 :x:
-
-Create a simple Login where an Avenger
-can login with his name and password
-once logged in the entity will be presented by his non-sensitive data
-
-
-## Technology recommendations
-* REST API
-* Spring Boot
-* Spring Data JPA
- 
-
+I did not get around to deploying this app, and there are a lot of loose ends, but I learned a lot about many-to-many relationships, authentication, authorization, angular and material ui, serving paginated results, testing, and a lot more.

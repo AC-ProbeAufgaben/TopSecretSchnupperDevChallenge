@@ -1,5 +1,6 @@
 package com.amiconsult.topsecretschnupperdevchallenge.model;
 
+import com.amiconsult.topsecretschnupperdevchallenge.model.reset_password.security_question.SecurityQuestionAnswer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -18,6 +19,8 @@ public interface FoodFriendsMapper {
     @Mapping(source = "favFoods", target = "favFoodsList", qualifiedByName = "getFoods")
     FoodFriendsDto toDto(FoodFriends foodFriend);
 
+    @Mapping(source ="securityAnswer", target = "securityQuestionAnswer.answer")
+    @Mapping(source ="securityQuestionId", target = "securityQuestionAnswer.question.id")
     @Mapping(source = "favFoodsList", target = "favFoods", qualifiedByName = "getFavs")
     FoodFriends fromDto(FoodFriendsDto foodFriendDto);
 
@@ -29,6 +32,13 @@ public interface FoodFriendsMapper {
         }
         return favFoodsList;
     }
+
+//    @Named("getSecurityAnswer")
+//    default SecurityQuestionAnswer getAnswer(String securityAnswer) {
+//        SecurityQuestionAnswer securityQuestionAnswer = new SecurityQuestionAnswer()
+//                .setAnswer(securityAnswer);
+//        return securityQuestionAnswer;
+//    }
 
     @Named("getFavs")
     default Set<FavFood> getFavFoodsSet(List<String> favFoodList) {

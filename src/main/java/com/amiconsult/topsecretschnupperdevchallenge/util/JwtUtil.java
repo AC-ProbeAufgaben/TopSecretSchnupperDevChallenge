@@ -1,5 +1,6 @@
 package com.amiconsult.topsecretschnupperdevchallenge.util;
 
+import com.amiconsult.topsecretschnupperdevchallenge.security.MyUserDetails;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,6 +13,8 @@ import java.util.function.Function;
 
 @Service
 public class JwtUtil {
+    //TODO: reorganize project structure
+    // e.g. JwtService
 
     @Value("SECRET_KEY")
     private String SECRET_KEY;
@@ -29,7 +32,6 @@ public class JwtUtil {
         return claimsResolver.apply(claims);
     }
     private Claims extractAllClaims(String token) throws ExpiredJwtException {
-
        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
@@ -37,8 +39,10 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(MyUserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("name", userDetails.getName());
+        claims.put("id", userDetails.getId());
         return createToken(claims, userDetails.getUsername());
     }
 

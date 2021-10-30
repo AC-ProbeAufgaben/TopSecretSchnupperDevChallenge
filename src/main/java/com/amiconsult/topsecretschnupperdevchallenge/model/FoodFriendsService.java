@@ -1,11 +1,19 @@
 package com.amiconsult.topsecretschnupperdevchallenge.model;
 
+import com.amiconsult.topsecretschnupperdevchallenge.model.reset_password.security_question.SecurityQuestion;
+import com.amiconsult.topsecretschnupperdevchallenge.model.reset_password.security_question.SecurityQuestionAnswer;
+import com.amiconsult.topsecretschnupperdevchallenge.model.reset_password.security_question.SecurityQuestionAnswerRepository;
+import com.amiconsult.topsecretschnupperdevchallenge.model.reset_password.security_question.SecurityQuestionRepository;
 import com.amiconsult.topsecretschnupperdevchallenge.repository.FavFoodRepository;
 import com.amiconsult.topsecretschnupperdevchallenge.repository.FoodFriendsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +32,16 @@ public class FoodFriendsService {
     FoodFriendsRepository foodFriendsRepository;
 
     @Autowired
+    SecurityQuestionAnswerRepository securityQuestionAnswerRepository;
+
+    @Autowired
+    SecurityQuestionRepository securityQuestionRepository;
+
+    @Autowired
     BCryptPasswordEncoder bcrypt;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     public List<FoodFriends> findAllFriends() {
         return foodFriendsRepository.findAll();
@@ -48,6 +65,22 @@ public class FoodFriendsService {
         return badName;
     }
 
+    public boolean checkPassword(AuthenticationRequest authenticationRequest) throws BadCredentialsException {
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
+            );
+            return true;
+        } catch (BadCredentialsException e) {
+            throw new BadCredentialsException("Bad Credentials", e);
+        }
+    }
+
+    public FoodFriends changePassword(FoodFriends friend, ChangePassRequest changePassRequest) {
+        friend.setPassword(bcrypt.encode(changePassRequest.getConfirmPassword()));
+        return friend;
+    }
+
     public FoodFriends checkDbAndSave(FoodFriends friend) {
         FoodFriends newFriend = new FoodFriends();
         newFriend.setName(friend.getName());
@@ -56,6 +89,23 @@ public class FoodFriendsService {
         newFriend.setPassword(bcrypt.encode(friend.getPassword()));
         newFriend.setActive(true);
         newFriend.setRole("ROLE_USER");
+
+        String answerToEncode = friend.getSecurityQuestionAnswer().getAnswer();
+        SecurityQuestionAnswer securityQuestionAnswer = friend.getSecurityQuestionAnswer();
+
+        newFriend.setSecurityQuestionAnswer(friend.getSecurityQuestionAnswer());
+        newFriend.getSecurityQuestionAnswer()
+                .setAnswer(bcrypt.encode(answerToEncode))
+                .setFoodFriend(newFriend)
+                .setCreatedAt(LocalDateTime.now());
+
+        Long securityQuestionIdFromDto = friend.getSecurityQuestionAnswer().getQuestion().getId();
+
+        // TODO: 2) move securityQuestionId from DTO to new object/class and remove it from FoodFriends
+        Optional<SecurityQuestion> securityQuestion = securityQuestionRepository.findById(securityQuestionIdFromDto);
+        securityQuestion.ifPresent(question -> newFriend.getSecurityQuestionAnswer().setQuestion(question));
+
+        securityQuestionAnswerRepository.save(newFriend.getSecurityQuestionAnswer());
 
         for (FavFood food : friend.getFavFoods()) {
 
@@ -73,6 +123,7 @@ public class FoodFriendsService {
             favoritedFood.addFoodFriend(newFriend);
 
         }
+
         foodFriendsRepository.save(newFriend);
         return newFriend;
     }
@@ -103,11 +154,13 @@ public class FoodFriendsService {
                 friend.setName(friendToUpdate.getName());
                 friend.setLastName(friendToUpdate.getLastName());
                 friend.setEmail(friendToUpdate.getEmail());
+                friend.setActive(friendToUpdate.isActive());
+                friend.setRole(friendToUpdate.getRole());
 
                 for (FavFood food : friendToUpdate.getFavFoods()) {
 
                     FavFood favoritedFood;
-
+                    // TODO: early returns
                     if (favFoodRepository.findByName(food.getName()) == null) {
                         favoritedFood = new FavFood();
                         favoritedFood.setName(food.getName());
